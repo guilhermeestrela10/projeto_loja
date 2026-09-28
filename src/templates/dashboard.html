@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block content %}
+<h2>Dashboard</h2>
+<div class="cards">
+<div class="card"><b>Vendas</b><br>{{ resumo.vendas }}</div>
+<div class="card"><b>Itens vendidos</b><br>{{ resumo.itens }}</div>
+<div class="card"><b>Faturamento</b><br>R$ {{ "%.2f"|format(resumo.faturamento) }}</div>
+</div>
+<h3>Produtos mais vendidos</h3>
+<table><tr><th>Produto</th><th>Quantidade</th></tr>
+{% for t in top %}<tr><td>{{ t.produto }}</td><td>{{ t.qtd }}</td></tr>{% else %}<tr><td colspan="2">Sem vendas.</td></tr>{% endfor %}
+</table>{% endblock %}

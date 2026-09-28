@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h2>Relatório de vendas</h2>
+<table><tr><th>Venda</th><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Unitário</th><th>Subtotal</th><th>Desconto</th><th>Total</th></tr>
+{% for l in linhas %}<tr><td>{{ l.venda_id }}</td><td>{{ l.data_venda.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ l.cliente }}</td><td>{{ l.produto }}</td><td>{{ l.quantidade }}</td>
+<td>{{ "%.2f"|format(l.preco_unitario) }}</td><td>{{ "%.2f"|format(l.subtotal) }}</td><td>{{ "%.2f"|format(l.desconto) }}</td><td>{{ "%.2f"|format(l.total) }}</td></tr>
+{% else %}<tr><td colspan="9">Nenhuma venda registrada.</td></tr>{% endfor %}
+</table>{% endblock %}

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><title>Sistema de Vendas</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}
+nav{background:#1f3a5f;padding:12px 24px}nav a{color:#fff;margin-right:18px;text-decoration:none}
+main{max-width:900px;margin:24px auto;padding:0 16px}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left}
+th{background:#e8edf3}form>*{margin:4px 6px 4px 0}input,select,button{padding:6px}
+button{background:#1f3a5f;color:#fff;border:0;border-radius:4px;cursor:pointer}
+.msg{background:#fff3cd;padding:10px;margin-bottom:12px;border-radius:4px}
+.cards{display:flex;gap:16px}.card{flex:1;background:#fff;padding:16px;border-radius:6px;margin-top:8px}
+</style></head><body>
+<nav><a href="/">Dashboard</a><a href="/produtos">Produtos</a><a href="/clientes">Clientes</a>
+<a href="/nova-venda">Nova venda</a><a href="/relatorio">Relatório de vendas</a></nav>
+<main>
+{% with m = get_flashed_messages() %}{% for x in m %}<div class="msg">{{ x }}</div>{% endfor %}{% endwith %}
+{% block content %}{% endblock %}
+</main></body></html>
