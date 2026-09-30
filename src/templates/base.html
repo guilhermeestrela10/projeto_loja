@@ -1,18 +1,183 @@
 <!doctype html>
-<html lang="pt-br"><head><meta charset="utf-8"><title>Sistema de Vendas</title>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Painel{% endblock %} · Sistema de Vendas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}
-nav{background:#1f3a5f;padding:12px 24px}nav a{color:#fff;margin-right:18px;text-decoration:none}
-main{max-width:900px;margin:24px auto;padding:0 16px}
-table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left}
-th{background:#e8edf3}form>*{margin:4px 6px 4px 0}input,select,button{padding:6px}
-button{background:#1f3a5f;color:#fff;border:0;border-radius:4px;cursor:pointer}
-.msg{background:#fff3cd;padding:10px;margin-bottom:12px;border-radius:4px}
-.cards{display:flex;gap:16px}.card{flex:1;background:#fff;padding:16px;border-radius:6px;margin-top:8px}
-</style></head><body>
-<nav><a href="/">Dashboard</a><a href="/produtos">Produtos</a><a href="/clientes">Clientes</a>
-<a href="/nova-venda">Nova venda</a><a href="/relatorio">Relatório de vendas</a></nav>
-<main>
-{% with m = get_flashed_messages() %}{% for x in m %}<div class="msg">{{ x }}</div>{% endfor %}{% endwith %}
-{% block content %}{% endblock %}
-</main></body></html>
+  :root{
+    --ink:#16202B;
+    --ink-soft:#233241;
+    --paper:#EEF1F4;
+    --surface:#FFFFFF;
+    --line:#DCE1E7;
+    --text:#1A232D;
+    --text-soft:#5B6B7A;
+    --gold:#C88A1E;
+    --gold-soft:#F4E4C2;
+    --good:#1F7A4D;
+    --bad:#B3261E;
+    --bad-soft:#FBEAE9;
+    --radius:10px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Manrope",system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--text);
+    display:flex;
+    min-height:100vh;
+  }
+  .nums, td.num, .stat-value{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;}
+
+  /* Sidebar */
+  aside{
+    width:220px;
+    flex-shrink:0;
+    background:var(--ink);
+    color:#CBD5E0;
+    display:flex;
+    flex-direction:column;
+    padding:24px 0;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 22px 22px;
+    margin-bottom:8px;
+    border-bottom:1px solid var(--ink-soft);
+  }
+  .brand-mark{
+    width:30px;height:30px;border-radius:8px;
+    background:linear-gradient(155deg,var(--gold),#8C5E12);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:var(--ink);font-size:15px;
+  }
+  .brand-name{font-weight:800;color:#fff;font-size:16px;letter-spacing:.2px}
+  nav{display:flex;flex-direction:column;gap:2px;padding:10px 12px}
+  nav a{
+    color:#B6C2CE;
+    text-decoration:none;
+    padding:10px 14px;
+    border-radius:8px;
+    font-weight:600;
+    font-size:14.5px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav a:hover{background:var(--ink-soft);color:#fff}
+  nav a.active{background:var(--gold-soft);color:var(--ink)}
+  nav a:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{
+    outline:2px solid var(--gold); outline-offset:2px;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.6;flex-shrink:0}
+
+  /* Main content */
+  .main{flex:1;min-width:0;padding:32px 40px;max-width:1100px}
+  .page-head{margin-bottom:24px}
+  .page-head h1{margin:0 0 4px;font-size:24px;letter-spacing:-.2px}
+  .page-head p{margin:0;color:var(--text-soft);font-size:14.5px}
+
+  .msg{
+    padding:12px 16px;border-radius:var(--radius);margin-bottom:20px;
+    font-size:14px;font-weight:600;border:1px solid transparent;
+  }
+  .msg.good{background:#E7F5EC;color:var(--good);border-color:#BFE3CC}
+  .msg.bad{background:var(--bad-soft);color:var(--bad);border-color:#F3C6C3}
+
+  /* Cards / stats */
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+  .stat-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;
+  }
+  .stat-label{font-size:13px;color:var(--text-soft);font-weight:600;margin-bottom:6px}
+  .stat-value{font-size:26px;font-weight:700;color:var(--ink)}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;margin-bottom:20px;
+  }
+  .panel h2{font-size:15px;margin:0 0 14px;color:var(--ink)}
+
+  /* Forms */
+  form.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:20px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:12.5px;font-weight:700;color:var(--text-soft)}
+  input, select{
+    font-family:inherit;font-size:14.5px;padding:9px 11px;
+    border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);
+    min-width:150px;
+  }
+  input:focus, select:focus{border-color:var(--gold)}
+  button{
+    font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;
+    padding:10px 18px;border-radius:8px;border:1px solid transparent;
+    background:var(--ink);color:#fff;
+  }
+  button:hover{background:var(--ink-soft)}
+  button.secondary{background:var(--surface);color:var(--ink);border-color:var(--line)}
+  button.secondary:hover{background:var(--paper)}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{
+    text-align:left;font-size:12px;text-transform:none;color:var(--text-soft);
+    font-weight:700;padding:0 12px 10px;border-bottom:1px solid var(--line);
+  }
+  th.num, td.num{text-align:right}
+  tbody td{padding:12px;border-bottom:1px solid var(--line)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--paper)}
+  .empty-row td{color:var(--text-soft);font-style:normal;padding:22px 12px}
+
+  .preview-card{
+    display:inline-flex;flex-direction:column;gap:6px;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 20px;margin-top:4px;min-width:220px;
+  }
+  .preview-row{display:flex;justify-content:space-between;gap:24px;font-size:14px}
+  .preview-row.total{font-weight:800;color:var(--ink);font-size:16px;border-top:1px dashed var(--line);padding-top:6px;margin-top:2px}
+
+  @media (max-width: 760px){
+    body{flex-direction:column}
+    aside{width:100%;flex-direction:row;align-items:center;padding:12px 16px;overflow-x:auto}
+    .brand{border-bottom:none;padding:0 14px 0 0;margin:0}
+    nav{flex-direction:row;padding:0}
+    .main{padding:20px}
+    .stat-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<aside>
+  <div class="brand">
+    <div class="brand-mark">SV</div>
+    <div class="brand-name">Sistema de Vendas</div>
+  </div>
+  <nav>
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint=='dashboard' }}"><span class="dot"></span>Dashboard</a>
+    <a href="{{ url_for('produtos') }}" class="{{ 'active' if request.endpoint=='produtos' }}"><span class="dot"></span>Produtos</a>
+    <a href="{{ url_for('clientes') }}" class="{{ 'active' if request.endpoint=='clientes' }}"><span class="dot"></span>Clientes</a>
+    <a href="{{ url_for('nova_venda') }}" class="{{ 'active' if request.endpoint=='nova_venda' }}"><span class="dot"></span>Nova venda</a>
+    <a href="{{ url_for('relatorio') }}" class="{{ 'active' if request.endpoint=='relatorio' }}"><span class="dot"></span>Relatório</a>
+  </nav>
+</aside>
+<div class="main">
+  {% with msgs = get_flashed_messages() %}
+    {% for m in msgs %}
+      <div class="msg {{ 'bad' if m.lower().startswith('erro') else 'good' }}">{{ m }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

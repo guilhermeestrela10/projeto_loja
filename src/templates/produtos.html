@@ -1,8 +1,28 @@
-{% extends "base.html" %}{% block content %}
-<h2>Produtos</h2>
-<form method="post"><input name="nome" placeholder="Nome" required>
-<input name="preco" type="number" step="0.01" min="0" placeholder="Preço" required>
-<input name="estoque" type="number" min="0" placeholder="Estoque" required><button>Cadastrar</button></form>
-<table><tr><th>ID</th><th>Nome</th><th>Preço</th><th>Estoque</th></tr>
-{% for p in produtos %}<tr><td>{{ p.id }}</td><td>{{ p.nome }}</td><td>R$ {{ "%.2f"|format(p.preco) }}</td><td>{{ p.estoque }}</td></tr>{% endfor %}
-</table>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Produtos{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Produtos</h1>
+  <p>Catálogo e estoque disponível para venda.</p>
+</div>
+
+<form class="inline" method="post">
+  <div class="field"><label for="nome">Nome</label><input id="nome" name="nome" placeholder="Ex.: Mouse Gamer" required></div>
+  <div class="field"><label for="preco">Preço (R$)</label><input id="preco" name="preco" type="number" step="0.01" min="0" placeholder="0,00" required></div>
+  <div class="field"><label for="estoque">Estoque</label><input id="estoque" name="estoque" type="number" min="0" placeholder="0" required></div>
+  <button type="submit">Cadastrar produto</button>
+</form>
+
+<div class="panel">
+  <table>
+    <thead><tr><th>Produto</th><th class="num">Preço</th><th class="num">Estoque</th></tr></thead>
+    <tbody>
+      {% for p in produtos %}
+      <tr><td>{{ p.nome }}</td><td class="num">R$ {{ "%.2f"|format(p.preco) }}</td><td class="num">{{ p.estoque }}</td></tr>
+      {% else %}
+      <tr class="empty-row"><td colspan="3">Nenhum produto cadastrado ainda.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

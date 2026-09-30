@@ -1,7 +1,37 @@
-{% extends "base.html" %}{% block content %}
-<h2>Relatório de vendas</h2>
-<table><tr><th>Venda</th><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Unitário</th><th>Subtotal</th><th>Desconto</th><th>Total</th></tr>
-{% for l in linhas %}<tr><td>{{ l.venda_id }}</td><td>{{ l.data_venda.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ l.cliente }}</td><td>{{ l.produto }}</td><td>{{ l.quantidade }}</td>
-<td>{{ "%.2f"|format(l.preco_unitario) }}</td><td>{{ "%.2f"|format(l.subtotal) }}</td><td>{{ "%.2f"|format(l.desconto) }}</td><td>{{ "%.2f"|format(l.total) }}</td></tr>
-{% else %}<tr><td colspan="9">Nenhuma venda registrada.</td></tr>{% endfor %}
-</table>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Relatório de vendas{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Relatório de vendas</h1>
+  <p>Consolidado de todas as vendas registradas, por item.</p>
+</div>
+
+<div class="panel">
+  <table>
+    <thead>
+      <tr>
+        <th class="num">Venda</th><th>Data</th><th>Cliente</th><th>Produto</th>
+        <th class="num">Qtd</th><th class="num">Unitário</th><th class="num">Subtotal</th>
+        <th class="num">Desconto</th><th class="num">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in linhas %}
+      <tr>
+        <td class="num">#{{ l.venda_id }}</td>
+        <td>{{ l.data_venda.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ l.cliente }}</td>
+        <td>{{ l.produto }}</td>
+        <td class="num">{{ l.quantidade }}</td>
+        <td class="num">{{ "%.2f"|format(l.preco_unitario) }}</td>
+        <td class="num">{{ "%.2f"|format(l.subtotal) }}</td>
+        <td class="num">{{ "%.2f"|format(l.desconto) }}</td>
+        <td class="num">{{ "%.2f"|format(l.total) }}</td>
+      </tr>
+      {% else %}
+      <tr class="empty-row"><td colspan="9">Nenhuma venda registrada ainda. Registre a primeira em "Nova venda".</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

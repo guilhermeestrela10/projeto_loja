@@ -1,11 +1,37 @@
-{% extends "base.html" %}{% block content %}
-<h2>Dashboard</h2>
-<div class="cards">
-<div class="card"><b>Vendas</b><br>{{ resumo.vendas }}</div>
-<div class="card"><b>Itens vendidos</b><br>{{ resumo.itens }}</div>
-<div class="card"><b>Faturamento</b><br>R$ {{ "%.2f"|format(resumo.faturamento) }}</div>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Dashboard</h1>
+  <p>Panorama geral das vendas registradas no sistema.</p>
 </div>
-<h3>Produtos mais vendidos</h3>
-<table><tr><th>Produto</th><th>Quantidade</th></tr>
-{% for t in top %}<tr><td>{{ t.produto }}</td><td>{{ t.qtd }}</td></tr>{% else %}<tr><td colspan="2">Sem vendas.</td></tr>{% endfor %}
-</table>{% endblock %}
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Vendas realizadas</div>
+    <div class="stat-value">{{ resumo.vendas }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Itens vendidos</div>
+    <div class="stat-value">{{ resumo.itens }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Faturamento</div>
+    <div class="stat-value">R$ {{ "%.2f"|format(resumo.faturamento) }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Produtos mais vendidos</h2>
+  <table>
+    <thead><tr><th>Produto</th><th class="num">Quantidade</th></tr></thead>
+    <tbody>
+      {% for t in top %}
+      <tr><td>{{ t.produto }}</td><td class="num">{{ t.qtd }}</td></tr>
+      {% else %}
+      <tr class="empty-row"><td colspan="2">Nenhuma venda ainda. Registre a primeira em "Nova venda".</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

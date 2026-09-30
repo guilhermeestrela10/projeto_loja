@@ -1,7 +1,27 @@
-{% extends "base.html" %}{% block content %}
-<h2>Clientes</h2>
-<form method="post"><input name="nome" placeholder="Nome" required>
-<input name="email" type="email" placeholder="E-mail" required><button>Cadastrar</button></form>
-<table><tr><th>ID</th><th>Nome</th><th>E-mail</th></tr>
-{% for c in clientes %}<tr><td>{{ c.id }}</td><td>{{ c.nome }}</td><td>{{ c.email }}</td></tr>{% endfor %}
-</table>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Clientes{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Clientes</h1>
+  <p>Cadastro de clientes habilitados a comprar.</p>
+</div>
+
+<form class="inline" method="post">
+  <div class="field"><label for="nome">Nome</label><input id="nome" name="nome" placeholder="Nome completo" required></div>
+  <div class="field"><label for="email">E-mail</label><input id="email" name="email" type="email" placeholder="nome@email.com" required></div>
+  <button type="submit">Cadastrar cliente</button>
+</form>
+
+<div class="panel">
+  <table>
+    <thead><tr><th>Nome</th><th>E-mail</th></tr></thead>
+    <tbody>
+      {% for c in clientes %}
+      <tr><td>{{ c.nome }}</td><td>{{ c.email }}</td></tr>
+      {% else %}
+      <tr class="empty-row"><td colspan="2">Nenhum cliente cadastrado ainda.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

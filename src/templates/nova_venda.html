@@ -1,12 +1,45 @@
-{% extends "base.html" %}{% block content %}
-<h2>Nova venda</h2>
-<form method="post">
-<select name="cliente_id" required>{% for c in clientes %}<option value="{{ c.id }}" {% if request.form.cliente_id == c.id|string %}selected{% endif %}>{{ c.nome }}</option>{% endfor %}</select>
-<select name="produto_id" required>{% for p in produtos %}<option value="{{ p.id }}" {% if request.form.produto_id == p.id|string %}selected{% endif %}>{{ p.nome }} – R$ {{ "%.2f"|format(p.preco) }} (estoque: {{ p.estoque }})</option>{% endfor %}</select>
-<input name="quantidade" type="number" min="1" value="{{ request.form.quantidade or 1 }}" required>
-<button name="acao" value="calcular">Calcular desconto</button>
-<button name="acao" value="confirmar">Confirmar venda</button>
-</form>
-{% if preview %}<div class="card">Subtotal: R$ {{ "%.2f"|format(preview.subtotal) }}<br>
-Desconto: R$ {{ "%.2f"|format(preview.desconto) }}<br><b>Total: R$ {{ "%.2f"|format(preview.total) }}</b></div>{% endif %}
+{% extends "base.html" %}
+{% block title %}Nova venda{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Nova venda</h1>
+  <p>Calcule o desconto e confirme para registrar a venda e baixar o estoque.</p>
+</div>
+
+<div class="panel">
+  <form method="post">
+    <div class="inline" style="margin-bottom:0">
+      <div class="field">
+        <label for="cliente_id">Cliente</label>
+        <select id="cliente_id" name="cliente_id" required>
+          {% for c in clientes %}
+          <option value="{{ c.id }}" {% if request.form.cliente_id == c.id|string %}selected{% endif %}>{{ c.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="produto_id">Produto</label>
+        <select id="produto_id" name="produto_id" required>
+          {% for p in produtos %}
+          <option value="{{ p.id }}" {% if request.form.produto_id == p.id|string %}selected{% endif %}>{{ p.nome }} · R$ {{ "%.2f"|format(p.preco) }} · estoque {{ p.estoque }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="quantidade">Quantidade</label>
+        <input id="quantidade" name="quantidade" type="number" min="1" value="{{ request.form.quantidade or 1 }}" required>
+      </div>
+      <button type="submit" name="acao" value="calcular" class="secondary">Calcular desconto</button>
+      <button type="submit" name="acao" value="confirmar">Confirmar venda</button>
+    </div>
+  </form>
+
+  {% if preview %}
+  <div class="preview-card">
+    <div class="preview-row"><span>Subtotal</span><span class="nums">R$ {{ "%.2f"|format(preview.subtotal) }}</span></div>
+    <div class="preview-row"><span>Desconto</span><span class="nums">R$ {{ "%.2f"|format(preview.desconto) }}</span></div>
+    <div class="preview-row total"><span>Total</span><span class="nums">R$ {{ "%.2f"|format(preview.total) }}</span></div>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}
